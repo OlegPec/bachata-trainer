@@ -37,7 +37,7 @@ window.BACHATA_TRACKS = [
   {
     id: 'solo-mia',
     title: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia',
-    file: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia.mp3',
+    file: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia (2).mp3',
     bpm: 110,
     offset: 0.51,
     ready: true,

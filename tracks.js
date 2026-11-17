@@ -67,6 +67,12 @@ window.BACHATA_TRACKS = [
 		{"type": "normal", "beats": 16},
 		{"type": "normal", "beats": 32},
 		{"type": "appendix", "beats": 4}
+	],
+	accents: [
+		{
+		  startBeat: 146,
+		  beats: 4
+		}
 	]
   }
 
@@ -79,9 +85,16 @@ window.BACHATA_TRACKS = [
   //   offset: 0.20,
   //   ready: true,
   //   segments: [
+  //	 {"type": "appendix", "beats": 2}
   //     {type:'normal', beats:32},
   //     {type:'normal', beats:16}, // короткий квадрат из 2 восьмёрок
   //     {type:'normal', beats:32}  // новый квадрат
+  //   ],
+  //   accents: [
+  //	{
+  //	  startBeat: 146,
+  //	  beats: 4
+  //	}
   //   ]
   // }
 ];

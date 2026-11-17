@@ -24,6 +24,17 @@ window.BACHATA_TRACKS = [
     segments: []
   },
   {
+    id: 'mojito',
+    title: 'DJ Cat, Thalia — Mojito (Bachata Remix)',
+    file: 'DJ Cat, Thalia — Mojito (Bachata Remix).mp3',
+    bpm: 107,
+    offset: 0.56,
+    ready: true,
+    segments: [
+		{"type": "normal", "beats": 16}
+	]
+  },
+  {
     id: 'solo-mia',
     title: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia',
     file: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia.mp3',

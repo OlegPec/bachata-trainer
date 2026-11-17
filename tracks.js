@@ -12,7 +12,13 @@ window.BACHATA_TRACKS = [
     bpm: 124.1,
     offset: 0.12,
     ready: true,
-    segments: []
+    segments: [],
+	accents: [
+		{
+		  startBeat: 92,
+		  beats: 4
+		}
+	]
   },
   {
     id: 'luna',
@@ -37,7 +43,7 @@ window.BACHATA_TRACKS = [
   {
     id: 'solo-mia',
     title: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia',
-    file: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia (2).mp3',
+    file: 'Grupo Extra, Ataca, La Alemana, El Tiguere — Solo Mia.mp3',
     bpm: 110,
     offset: 0.51,
     ready: true,
@@ -47,6 +53,20 @@ window.BACHATA_TRACKS = [
 		{"type": "normal", "beats": 32},
 		{"type": "normal", "beats": 32},
 		{"type": "normal", "beats": 16}
+	]
+  },
+  {
+    id: 'tulum',
+    title: 'Dani J, DJ Tony Pecino — Tulum',
+    file: 'Dani J, DJ Tony Pecino — Tulum.mp3',
+    bpm: 105,
+    offset: 1.2,
+    ready: false,
+    segments: [
+		{"type": "appendix", "beats": 2},
+		{"type": "normal", "beats": 16},
+		{"type": "normal", "beats": 32},
+		{"type": "appendix", "beats": 4}
 	]
   }
 

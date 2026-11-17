@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bachata Trainer v0.4 — квадраты</title>
+<title>Bachata Trainer v0.5 — разметка акцентов</title>
 <style>
 :root{color-scheme:dark;--bg:#101218;--panel:#1a1e28;--muted:#9ba3b4;--line:#303747;--accent:#a78bfa;--green:#34d399;--amber:#fbbf24}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#242039 0,#101218 48%);color:#f4f5f8;font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
@@ -33,6 +33,15 @@ button.secondary{background:#303747;color:#fff}button:disabled{opacity:.4;cursor
 .beat{border:1px solid var(--line);background:#11151d;border-radius:10px;padding:10px 0;color:#aeb5c3;font-weight:700}
 .beat.active{background:var(--green);color:#07130f;border-color:var(--green);transform:scale(1.06)}
 .beat.appendix-active{background:var(--amber);color:#211600;border-color:var(--amber)}
+.beat.accent-marked{border-color:#b98cff;background:#382953;color:#f0e1ff}
+.beat.accent-active{background:#cd9cff;color:#241333;border-color:#cd9cff;transform:scale(1.06)}
+.accent-indicator{font-weight:700;min-height:24px;color:#d9b5ff;margin:9px auto}
+.accent-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.accent-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#11151d;border:1px solid var(--line);border-radius:10px;padding:9px}
+.accent-row button{font-size:13px;padding:8px 11px}
+.accent-row .accent-description{color:#d7c5ef;font-size:13px}
+button.accent-button{background:#b98cff;color:#241333}
+button.remove-accent{background:#3b2a43;color:#f3d2e3}
 .status{color:var(--muted);min-height:24px}.timeline{width:100%;accent-color:var(--accent);margin-top:10px}
 .small{font-size:13px;color:var(--muted)}.tag{display:inline-block;border:1px solid var(--line);padding:4px 9px;border-radius:999px;color:var(--muted);font-size:12px}
 details summary{cursor:pointer;font-weight:700} .note{background:#11151d;border-radius:10px;padding:12px;color:var(--muted);font-size:13px}
@@ -41,7 +50,7 @@ details summary{cursor:pointer;font-weight:700} .note{background:#11151d;border-
 </head>
 <body>
 <main>
-  <div class="top"><div><h1>Bachata Trainer</h1><div class="sub">Версия 0.4 · разметка · короткие квадраты</div></div><span class="tag">Локально в браузере</span></div>
+  <div class="top"><div><h1>Bachata Trainer</h1><div class="sub">Версия 0.5 · квадраты · ручные акценты</div></div><span class="tag">Локально в браузере</span></div>
 
   <section class="panel">
     <div class="grid">
@@ -73,6 +82,9 @@ details summary{cursor:pointer;font-weight:700} .note{background:#11151d;border-
       <div class="beat">1</div><div class="beat">2</div><div class="beat">3</div><div class="beat">4</div>
       <div class="beat">5</div><div class="beat">6</div><div class="beat">7</div><div class="beat">8</div>
     </div>
+    <div class="accent-indicator" id="accentIndicator"></div>
+    <div class="controls" style="justify-content:center"><button class="accent-button" id="markAccent" disabled>✦ Отметить 5–8 в текущей восьмёрке</button></div>
+    <div class="small" style="text-align:center;margin-top:8px">Быстрая метка: клавиша A (когда не редактируешь поле)</div>
     <div class="status" id="status">Счёт синхронизируется по BPM и Offset.</div>
   </section>
 
@@ -85,12 +97,75 @@ details summary{cursor:pointer;font-weight:700} .note{background:#11151d;border-
       <div class="controls"><button id="apply" class="secondary">Применить структуру</button><span class="small" id="structureStatus">Сейчас: обычный счёт 1–8 без разметки аппендиксов.</span></div>
     </details>
   </section>
+  <section class="panel">
+    <h2 style="margin-top:0">✦ Акценты в музыке</h2>
+    <p class="small">Когда слышишь акцент на <b>5, 6, 7, 8</b>, нажми кнопку на любой доле соответствующей восьмёрки. Подсветка будет привязана именно к этой восьмёрке. Повторное нажатие в ней снимает метку. На ритм, BPM и границы квадратов акценты не влияют.</p>
+    <div class="accent-list" id="accentList"><p class="small">Пока нет меток.</p></div>
+    <div class="controls">
+      <button class="secondary" id="exportSettings" disabled>↓ Скачать JSON настроек</button>
+      <label style="display:flex;align-items:center;gap:8px;margin:0">Загрузить JSON <input id="importSettings" type="file" accept=".json,application/json" style="max-width:270px"></label>
+    </div>
+    <div class="small" id="saveStatus">Настройки автоматически сохраняются в этом браузере. Для переноса в tracks.js скачай JSON.</div>
+  </section>
   <div class="note">Важно: это первый прототип режима обучения. Он показывает счёт по заданным BPM и Offset, но пока не распознаёт музыку и не определяет аппендиксы автоматически. Сначала проверь на одном треке, совпадает ли цифра «1» с твоим музыкальным счётом.</div>
 </main>
 <script>
 const $ = id => document.getElementById(id);
 const audio = $('audio');
-let objectUrl = null, segments = [], totalSegmentBeats = 0, raf = null, lastBeat = -1;
+let objectUrl = null, segments = [], accents = [], totalSegmentBeats = 0, raf = null, lastBeat = -1;
+let fileName = '';
+function savedKey(){return 'bachata.v05.'+fileName}
+function saveSettings(){
+  if(!fileName)return;
+  try{localStorage.setItem(savedKey(),JSON.stringify({bpm:Number($('bpm').value),offset:Number($('offset').value),segments,accents}));
+    $('saveStatus').textContent='✓ Сохранено локально для «'+fileName+'». Для GitHub скачай JSON.';
+  }catch(e){$('saveStatus').textContent='Не удалось сохранить в браузере — обязательно скачай JSON.'}
+}
+function resetTrackAnnotations(){segments=[];accents=[];$('segments').value='';$('structureStatus').textContent='Обычный счёт 1–8, без разметки.'}
+function safeAccents(list){return Array.isArray(list)?list.filter(a=>a&&Number.isInteger(a.startBeat)&&a.startBeat>=0&&a.beats===4):[]}
+function normalizeSegments(list){
+ if(!Array.isArray(list))throw new Error('segments должен быть массивом');
+ list.forEach((s,i)=>{
+   if(!s||!['normal','appendix'].includes(s.type))throw new Error('Сегмент '+(i+1)+': type должен быть normal или appendix.');
+   if(!Number.isInteger(s.beats)||s.beats<1)throw new Error('Сегмент '+(i+1)+': beats должен быть целым числом больше нуля.');
+ });
+ return list;
+}
+function markStart(p){return p.beatIndex-(p.count-1)+4}
+function isMarked(start){return accents.some(a=>a.startBeat===start)}
+function markerTime(a){return offset()+a.startBeat*60/bpm()}
+function renderAccentList(){
+ const list=$('accentList');list.replaceChildren();
+ if(!accents.length){const p=document.createElement('p');p.className='small';p.textContent='Метки ещё не добавлены.';list.append(p);return}
+ for(const a of [...accents].sort((x,y)=>x.startBeat-y.startBeat)){
+   const row=document.createElement('div');row.className='accent-row';
+   const when=markerTime(a), pos=getPosition(when+0.001);
+   const label=document.createElement('span');label.className='accent-description';
+   label.textContent='✦ '+(pos&&!pos.appendix&&!pos.before?'Квадрат '+pos.square+', восьмёрка '+pos.eighthInSquare:'Доля '+(a.startBeat+1))+' · '+when.toFixed(2)+' с · 5–8';
+   const actions=document.createElement('div');actions.className='controls';actions.style.marginTop='0';
+   const jump=document.createElement('button');jump.className='secondary';jump.textContent='Перейти';jump.addEventListener('click',()=>{if(audio.src){audio.currentTime=Math.max(0,when);update()}});
+   const del=document.createElement('button');del.className='remove-accent';del.textContent='Удалить';del.addEventListener('click',()=>{accents=accents.filter(x=>x.startBeat!==a.startBeat);renderAccentList();saveSettings();update()});
+   actions.append(jump,del);row.append(label,actions);list.append(row);
+ }
+}
+function renderAccentVisual(p){
+ if(!p||p.before||p.appendix){$('accentIndicator').textContent='';return}
+ const start=markStart(p), marked=isMarked(start);
+ $('markAccent').textContent=(marked?'✕ Снять':'✦ Отметить')+' акцент 5–8 в текущей восьмёрке';
+ $('accentIndicator').textContent=marked?'✦ Акцент на 5–8 в этой восьмёрке':'';
+ [...$('beats').children].forEach((el,i)=>{
+   if(marked&&i>=4)el.className='beat '+(i===p.count-1?'accent-active':'accent-marked');
+ });
+}
+function exportTrack(){
+ const basename=fileName.replace(/\.[^.]+$/,'');
+ const hash=[...fileName].reduce((h,c)=>((h*31+c.charCodeAt(0))>>>0),7);
+ const result={id:'track-'+hash,title:basename,file:fileName,bpm:Number($('bpm').value),offset:Number($('offset').value),ready:false,segments,accents};
+ const blob=new Blob([JSON.stringify(result,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download='bachata-'+hash+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $('saveStatus').textContent='JSON скачан. В tracks.js добавь объект в массив BACHATA_TRACKS (и поставь ready: true после проверки).';
+}
+
 
 function fmt(sec){
   if(!Number.isFinite(sec)) return '00:00';
@@ -104,6 +179,7 @@ function renderIdle(message){
   $('count').className='count'; $('bar').textContent=message||'Выбери трек и нажми «Играть»';
   [...$('beats').children].forEach((el,i)=>{el.className='beat';el.textContent=i+1});
   [...$('squareProgress').children].forEach(el=>el.className='square-slot');
+  $('accentIndicator').textContent='';
 }
 function getPosition(t){
   const beatDuration=60/bpm();
@@ -161,17 +237,30 @@ function update(){
     if(p.appendix){
       [...$('beats').children].forEach((el,i)=>{el.className='beat'+(i===p.count-1?' appendix-active':'')});
     }
+    renderAccentVisual(p);
     if(p.beatIndex!==lastBeat){lastBeat=p.beatIndex}
   }
-  if(!audio.paused) raf=requestAnimationFrame(update);
 }
+function tick(){update();if(!audio.paused&&!audio.ended)raf=requestAnimationFrame(tick);else raf=null}
 $('file').addEventListener('change',e=>{
   const f=e.target.files[0]; if(!f)return;
+  audio.pause();cancelAnimationFrame(raf);
   if(objectUrl) URL.revokeObjectURL(objectUrl);
-  objectUrl=URL.createObjectURL(f); audio.src=objectUrl;
-  $('trackname').textContent=f.name;
+  fileName=f.name;objectUrl=URL.createObjectURL(f);audio.src=objectUrl;
+  $('trackname').textContent=fileName;
+  resetTrackAnnotations();
+  try{
+    const saved=JSON.parse(localStorage.getItem(savedKey())||'null');
+    if(saved){
+      $('bpm').value=saved.bpm??117;$('offset').value=saved.offset??0.30;
+      segments=normalizeSegments(saved.segments||[]);accents=safeAccents(saved.accents);
+      $('segments').value=segments.length?JSON.stringify(segments,null,2):'';
+      $('structureStatus').textContent='Загружена сохранённая разметка ('+segments.length+' сегментов).';
+    }
+  }catch(e){$('saveStatus').textContent='Не удалось загрузить сохранённые настройки: '+e.message}
+  $('markAccent').disabled=$('exportSettings').disabled=false;
   $('play').disabled=$('pause').disabled=$('restart').disabled=$('seek').disabled=false;
-  renderIdle('Готов к воспроизведению.');
+  renderAccentList();renderIdle('Готов к воспроизведению.');
 });
 audio.addEventListener('loadedmetadata',()=>{
   $('duration').textContent=fmt(audio.duration); $('seek').max=100;
@@ -179,32 +268,60 @@ audio.addEventListener('loadedmetadata',()=>{
 $('play').addEventListener('click',async()=>{
   if(!audio.src)return;
   audio.playbackRate=Math.max(.5,Math.min(1.5,Number($('speed').value)||1));
-  try{await audio.play();cancelAnimationFrame(raf);update();}catch(e){$('status').textContent='Не удалось запустить аудио: '+e.message;}
+  try{await audio.play();cancelAnimationFrame(raf);tick();}catch(e){$('status').textContent='Не удалось запустить аудио: '+e.message;}
 });
 $('pause').addEventListener('click',()=>{audio.pause();cancelAnimationFrame(raf);update();});
-$('restart').addEventListener('click',()=>{audio.currentTime=0;lastBeat=-1; if(!audio.paused)update();else renderIdle('Начало трека. Нажми «Играть».');});
+$('restart').addEventListener('click',()=>{audio.currentTime=0;lastBeat=-1; if(audio.paused)update();else update();});
 $('seek').addEventListener('input',e=>{if(audio.duration)audio.currentTime=(Number(e.target.value)/100)*audio.duration; if(audio.paused)update();});
 $('speed').addEventListener('change',()=>{audio.playbackRate=Math.max(.5,Math.min(1.5,Number($('speed').value)||1));});
-$('bpm').addEventListener('change',()=>{lastBeat=-1;if(audio.paused)update();});
-$('offset').addEventListener('change',()=>{lastBeat=-1;if(audio.paused)update();});
+$('bpm').addEventListener('change',()=>{lastBeat=-1;renderAccentList();saveSettings();if(audio.paused)update();});
+$('offset').addEventListener('change',()=>{lastBeat=-1;renderAccentList();saveSettings();if(audio.paused)update();});
 audio.addEventListener('pause',()=>cancelAnimationFrame(raf));
 audio.addEventListener('ended',()=>{cancelAnimationFrame(raf);$('phase').textContent='ТРЕК ЗАВЕРШЁН';$('status').textContent='Прослушивание завершено.';});
 $('apply').addEventListener('click',()=>{
   const raw=$('segments').value.trim();
-  if(!raw){segments=[];$('structureStatus').textContent='Обычный счёт 1–8 без разметки аппендиксов.';if(audio.paused)update();return;}
+  if(!raw){segments=[];$('structureStatus').textContent='Обычный счёт 1–8 без разметки аппендиксов.';renderAccentList();saveSettings();update();return;}
   try{
     const parsed=JSON.parse(raw);
-    if(!Array.isArray(parsed)||!parsed.length)throw new Error('Ожидается непустой массив.');
-    parsed.forEach((s,i)=>{
-      if(!['normal','appendix'].includes(s.type))throw new Error('Сегмент '+(i+1)+': type должен быть normal или appendix.');
-      if(!Number.isInteger(s.beats)||s.beats<1)throw new Error('Сегмент '+(i+1)+': beats должен быть целым числом больше нуля.');
-    });
+    normalizeSegments(parsed);
     segments=parsed;totalSegmentBeats=segments.reduce((sum,s)=>sum+s.beats,0);
     $('structureStatus').textContent='Применено сегментов: '+segments.length+'. Всего размечено долей: '+totalSegmentBeats+'.';
-    if(audio.paused)update();
+    renderAccentList();saveSettings();update();
   }catch(err){$('structureStatus').textContent='Ошибка JSON: '+err.message+' (проверь запятые перед ] и }).';}
 });
-renderIdle();
+$('markAccent').addEventListener('click',()=>{
+  if(!audio.src)return;
+  const p=getPosition(audio.currentTime);
+  if(p.before||p.appendix){$('saveStatus').textContent='Акцент 5–8 можно отметить только внутри обычной восьмёрки.';return}
+  const start=markStart(p);
+  if(isMarked(start))accents=accents.filter(a=>a.startBeat!==start);
+  else accents.push({startBeat:start,beats:4});
+  accents.sort((a,b)=>a.startBeat-b.startBeat);
+  renderAccentList();saveSettings();update();
+});
+document.addEventListener('keydown',e=>{
+ if(e.code!=='KeyA'||e.repeat||e.ctrlKey||e.altKey||e.metaKey||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;
+ if(!$('markAccent').disabled){e.preventDefault();$('markAccent').click()}
+});
+$('exportSettings').addEventListener('click',exportTrack);
+$('importSettings').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+   const data=JSON.parse(await file.text());
+   const parsed=normalizeSegments(data.segments||[]),newAccents=safeAccents(data.accents||[]);
+   if(fileName&&data.file&&data.file!==fileName){
+     $('saveStatus').textContent='Внимание: настройки для «'+data.file+'», а выбран MP3 «'+fileName+'». Импорт отменён.';return;
+   }
+   segments=parsed;accents=newAccents;
+   if(data.bpm!=null)$('bpm').value=data.bpm;
+   if(data.offset!=null)$('offset').value=data.offset;
+   $('segments').value=segments.length?JSON.stringify(segments,null,2):'';
+   $('structureStatus').textContent='Импортировано сегментов: '+segments.length;
+   renderAccentList();saveSettings();update();
+ }catch(err){$('saveStatus').textContent='Ошибка импорта JSON: '+err.message}
+ finally{e.target.value=''}
+});
+renderIdle();renderAccentList();
 </script>
 </body>
 </html>

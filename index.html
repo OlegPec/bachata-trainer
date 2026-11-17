@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bachata Trainer — обучение</title>
+<style>
+:root{color-scheme:dark;--bg:#0f1118;--panel:#1c202b;--edge:#34394b;--muted:#a3aabc;--primary:#ad91ff;--green:#34d399;--orange:#fbbf24}
+*{box-sizing:border-box}html,body{min-height:100%}body{margin:0;background:radial-gradient(ellipse at 70% -20%,#30274d 0,#10131c 54%,#0f1118 100%);color:#f3f3f6;font:16px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+main{width:min(1120px,100%);margin:auto;padding:28px 18px 52px}.header{display:flex;gap:15px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:19px}
+h1{font-size:clamp(26px,4vw,34px);margin:0}.sub{color:var(--muted);font-size:14px;margin-top:5px}.header-right{display:flex;gap:10px;align-items:center}
+.pill{padding:6px 11px;border:1px solid var(--edge);border-radius:30px;color:#cbb9ff;background:#211d33;font-size:13px;font-weight:700}
+a{color:#cdbfff;text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:grid;grid-template-columns:minmax(250px,300px) minmax(0,1fr);align-items:start;gap:16px}.panel{border:1px solid var(--edge);background:rgba(28,32,43,.96);border-radius:17px;padding:18px}.panel+.panel{margin-top:15px}
+h2{margin:0 0 14px;font-size:18px}label{font-size:13px;color:var(--muted);display:block;margin-bottom:7px}
+input,select,button{font:inherit}input[type=search],select{width:100%;border-radius:10px;background:#121620;color:#f2f3fa;border:1px solid #414658;padding:11px 12px;outline-offset:2px}
+#trackList{display:flex;flex-direction:column;gap:8px;margin-top:11px;max-height:515px;overflow:auto}.track{border:1px solid #3b4050;background:#151923;color:#f2f3fa;border-radius:11px;padding:12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-weight:600}
+.track.active{border-color:var(--primary);background:#27223a}.track .mini{font-size:12px;color:var(--muted);font-weight:500}.track.active .mini{color:#d8cff7}
+button{cursor:pointer;border:0;border-radius:11px;padding:11px 17px;background:var(--primary);color:#191325;font-weight:750}button:hover{filter:brightness(1.08)}button:disabled{cursor:not-allowed;opacity:.43;filter:none}button.secondary{background:#343a4b;color:#f5f4fa}
+.meter{margin-top:16px;border-top:1px solid var(--edge);padding-top:14px;font-size:13px;color:var(--muted)}
+.player-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.player-title{margin:0;font-size:22px;letter-spacing:-.02em}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.chip{border-radius:20px;background:#282d3b;padding:5px 9px;font-size:12px;color:#d3d7e1}.chip.warning{background:#463a21;color:#f6d58b}.chip.success{background:#153c32;color:#85dfb7}
+.player-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.speed-group{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:15px}.speed-group label{margin:0 7px 0 0}.speed{padding:8px 11px;background:#2c3241;color:#e4e6ef}.speed.selected{background:#8d75d4;color:#fff}
+.progress{width:100%;margin-top:15px;accent-color:var(--primary);cursor:pointer}#seek:disabled{cursor:not-allowed}.time-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.status{color:var(--muted);font-size:13px;min-height:22px;margin-top:9px}
+.stage{text-align:center}.phase{text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted);margin-top:2px}.count{color:var(--green);font-size:clamp(100px,18vw,166px);font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.06em;margin:8px 0 0}.count.appendix{color:var(--orange)}.square-title{font-weight:750;font-size:20px;margin-top:7px}.square-info{color:var(--muted);margin-top:3px}
+.squares{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:580px;margin:19px auto 17px}.square{padding:13px 5px;border-radius:10px;background:#131722;border:1px solid var(--edge);font-weight:700;color:#8d96a6;font-size:14px}.square.done{background:#17352c;color:#7bcaab;border-color:#255748}.square.current{background:var(--primary);color:#171321;border-color:var(--primary)}.square.inactive{opacity:.4}.square.missing{opacity:.2;text-decoration:line-through}
+.beats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px;max-width:580px;margin:0 auto 13px}.beat{padding:11px 2px;border:1px solid var(--edge);background:#141824;color:#a9afbf;border-radius:9px;font-weight:750}.beat.current{background:var(--green);color:#102018;border-color:var(--green)}.beat.appendix{background:var(--orange);color:#21170b;border-color:var(--orange)}.hint{font-size:13px;color:var(--muted)}
+.help{margin-top:15px;color:var(--muted);font-size:13px}.hidden{display:none!important}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.beats{gap:4px}.square{font-size:12px}.header-right{font-size:14px}}
+</style>
+</head>
+<body>
+<main>
+  <header class="header">
+    <div><h1>🎵 Bachata Trainer</h1><div class="sub">Режим обучения · треки уже настроены</div></div>
+    <div class="header-right"><span class="pill">Обучение</span><a href="admin.html" title="Открыть отдельную страницу для разметки">⚙ Разметка</a></div>
+  </header>
+  <div class="layout">
+    <aside class="panel">
+      <h2>Выбор песни</h2>
+      <label for="search">Найти по названию</label>
+      <input id="search" type="search" placeholder="Например, Hilito" autocomplete="off">
+      <div id="trackList" aria-label="Список треков"></div>
+      <div class="meter" id="listStats"></div>
+    </aside>
+    <div>
+      <section class="panel">
+        <div class="player-head">
+          <div><h2 class="player-title" id="selectedName">Выбери песню</h2><div class="tags" id="tags"></div></div>
+        </div>
+        <div class="player-buttons">
+          <button id="play" disabled>▶ Играть</button>
+          <button id="pause" class="secondary" disabled>Ⅱ Пауза</button>
+          <button id="restart" class="secondary" disabled>↺ С начала</button>
+        </div>
+        <div class="speed-group">
+          <label>Скорость:</label>
+          <button class="speed" data-speed="0.5">0.5×</button>
+          <button class="speed" data-speed="0.75">0.75×</button>
+          <button class="speed selected" data-speed="1">1×</button>
+          <button class="speed" data-speed="1.25">1.25×</button>
+        </div>
+        <input id="seek" class="progress" type="range" min="0" max="1000" value="0" disabled aria-label="Положение в треке">
+        <div class="time-row"><span id="current">00:00</span><span id="duration">00:00</span></div>
+        <div class="status" id="status" role="status" aria-live="polite">Музыка загружается из папки audio.</div>
+      </section>
+      <section class="panel stage">
+        <div class="phase" id="phase">ОЖИДАНИЕ</div>
+        <div class="count" id="count">—</div>
+        <div class="square-title" id="squareTitle">Пока ничего не играет</div>
+        <div class="square-info" id="squareInfo">Счёт 1–8 по готовой разметке</div>
+        <div class="squares" id="squares">
+          <div class="square">1-я восьмёрка</div><div class="square">2-я восьмёрка</div><div class="square">3-я восьмёрка</div><div class="square">4-я восьмёрка</div>
+        </div>
+        <div class="beats" id="beats">
+          <div class="beat">1</div><div class="beat">2</div><div class="beat">3</div><div class="beat">4</div>
+          <div class="beat">5</div><div class="beat">6</div><div class="beat">7</div><div class="beat">8</div>
+        </div>
+        <div class="hint">Полный квадрат = 4 восьмёрки; короткий может содержать 2. Аппендиксы — жёлтым.</div>
+      </section>
+      <div class="help">Настройки берутся из <code>tracks.js</code>. Здесь их нельзя случайно изменить. Длина трека и наличие MP3 зависят от файлов в папке <code>audio</code>.</div>
+    </div>
+  </div>
+</main>
+<audio id="audio" preload="metadata"></audio>
+<script src="tracks.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const audio=$('audio');
+const tracks=(Array.isArray(window.BACHATA_TRACKS)?window.BACHATA_TRACKS:[]).filter(t=>t&&t.id&&t.title&&t.file&&Number(t.bpm)>0&&Number.isFinite(Number(t.offset)));
+let selected=null, frame=null;
+function fmt(s){if(!Number.isFinite(s))return'00:00';s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function setStatus(message){$('status').textContent=message}
+function clearAnimation(){if(frame!==null){cancelAnimationFrame(frame);frame=null}}
+function displayPlaceholder(message){$('phase').textContent='ОЖИДАНИЕ';$('count').textContent='—';$('count').className='count';$('squareTitle').textContent=message||'Пока ничего не играет';$('squareInfo').textContent='Счёт 1–8 по готовой разметке';[...$('squares').children].forEach(e=>e.className='square');[...$('beats').children].forEach(e=>e.className='beat')}
+function validSegments(t){return Array.isArray(t.segments)?t.segments.filter(s=>s&&['normal','appendix'].includes(s.type)&&Number.isInteger(s.beats)&&s.beats>0):[]}
+function position(t){
+  if(!selected)return null;
+  const elapsed=t-Number(selected.offset);
+  if(elapsed<0)return {before:true,seconds:-elapsed};
+  const globalBeat=Math.floor(elapsed/(60/Number(selected.bpm))+1e-8);
+  let pos=globalBeat, nextSquare=1;
+  for(const s of validSegments(selected)){
+    if(pos<s.beats){
+      if(s.type==='appendix')return {appendix:true,count:pos%4+1,globalBeat};
+      return squarePos(pos,nextSquare,s.beats,globalBeat);
+    }
+    pos-=s.beats;
+    if(s.type==='normal')nextSquare+=Math.ceil(s.beats/32);
+  }
+  return squarePos(pos,nextSquare,Infinity,globalBeat);
+}
+function squarePos(beatInSegment,firstSquare,segmentLength,globalBeat){
+  const localSquare=Math.floor(beatInSegment/32);
+  const squareLength=Math.min(32,segmentLength-localSquare*32);
+  return {appendix:false,count:beatInSegment%8+1,square:firstSquare+localSquare,
+    eighth:Math.floor((beatInSegment%32)/8)+1,
+    eighthCount:Number.isFinite(squareLength)?Math.ceil(squareLength/8):4,globalBeat};
+}
+function render(){
+  if(!selected)return;
+  $('current').textContent=fmt(audio.currentTime);
+  if(Number.isFinite(audio.duration)&&audio.duration>0){$('seek').value=String(Math.round(1000*audio.currentTime/audio.duration))}
+  const p=position(audio.currentTime);
+  if(!p||p.before){displayPlaceholder(p?'Первый счёт через '+p.seconds.toFixed(2)+' с':'Пока ничего не играет')}
+  else{
+    $('phase').textContent=p.appendix?'АППЕНДИКС':'ОСНОВНОЙ СЧЁТ';
+    $('count').textContent=String(p.count);$('count').className='count'+(p.appendix?' appendix':'');
+    $('squareTitle').textContent=p.appendix?'Дополнительные доли 1–4':'Квадрат №'+p.square;
+    $('squareInfo').textContent=p.appendix?'Сейчас идёт аппендикс':'Восьмёрка '+p.eighth+' из '+p.eighthCount+(p.eighthCount<4?' · короткий квадрат':'');
+    [...$('squares').children].forEach((el,i)=>el.className='square'+(p.appendix?' inactive':i+1>p.eighthCount?' missing':i+1<p.eighth?' done':i+1===p.eighth?' current':''));
+    [...$('beats').children].forEach((el,i)=>el.className='beat'+(i===p.count-1?(p.appendix?' appendix':' current'):''));
+  }
+}
+function tick(){render();if(!audio.paused&&!audio.ended)frame=requestAnimationFrame(tick);else frame=null}
+function renderList(){
+ const q=$('search').value.toLocaleLowerCase('ru').trim();const list=$('trackList');list.replaceChildren();
+ const matched=tracks.filter(t=>t.title.toLocaleLowerCase('ru').includes(q));
+ for(const t of matched){
+   const btn=document.createElement('button');btn.type='button';btn.className='track'+(selected&&selected.id===t.id?' active':'');
+   const title=document.createElement('span');title.textContent=t.title;
+   const status=document.createElement('span');status.className='mini';status.textContent=(t.ready?'✓ Размечен':'◌ Разметка не проверена')+' · '+t.bpm+' BPM';
+   btn.append(title,status);btn.addEventListener('click',()=>choose(t));list.append(btn);
+ }
+ if(!matched.length){const msg=document.createElement('p');msg.className='help';msg.textContent='Песни не найдены.';list.append(msg)}
+ $('listStats').textContent='Песен: '+tracks.length+' · проверено: '+tracks.filter(t=>t.ready).length;
+}
+function choose(t){
+ clearAnimation();audio.pause();selected=t;audio.removeAttribute('src');audio.load();
+ $('selectedName').textContent=t.title;
+ const chips=[t.bpm+' BPM','Offset '+Number(t.offset).toFixed(2)+' с',t.ready?'✓ Размечен':'Разметку нужно проверить'];
+ $('tags').replaceChildren(...chips.map((text,i)=>{const e=document.createElement('span');e.className='chip'+(i===2?(t.ready?' success':' warning'):'');e.textContent=text;return e}));
+ const fileUrl='./audio/'+encodeURIComponent(t.file);
+ audio.src=fileUrl;audio.playbackRate=Number(document.querySelector('.speed.selected')?.dataset.speed||1);
+ $('current').textContent='00:00';$('duration').textContent='00:00';$('seek').value=0;
+ $('play').disabled=false;$('pause').disabled=false;$('restart').disabled=false;$('seek').disabled=false;
+ setStatus('Готов к воспроизведению.');displayPlaceholder('Нажми «Играть»');renderList();
+}
+$('search').addEventListener('input',renderList);
+$('play').addEventListener('click',async()=>{
+ if(!selected)return;
+ try{await audio.play();clearAnimation();tick();setStatus('Воспроизведение');}
+ catch(e){setStatus('Не удалось открыть файл. Проверь audio/'+selected.file+' ('+e.message+')')}
+});
+$('pause').addEventListener('click',()=>{audio.pause();clearAnimation();render();setStatus('Пауза')});
+$('restart').addEventListener('click',()=>{if(!selected)return;audio.currentTime=0;render();setStatus('С начала')});
+$('seek').addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&audio.duration>0){audio.currentTime=audio.duration*Number($('seek').value)/1000;render()}});
+document.querySelectorAll('[data-speed]').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('[data-speed]').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');audio.playbackRate=Number(btn.dataset.speed);
+ if('preservesPitch'in audio)audio.preservesPitch=true;
+}));
+audio.addEventListener('loadedmetadata',()=>{$('duration').textContent=fmt(audio.duration);render()});
+audio.addEventListener('error',()=>{if(!selected)return;clearAnimation();setStatus('Не найден или не читается MP3: audio/'+selected.file);$('play').disabled=true});
+audio.addEventListener('ended',()=>{clearAnimation();render();$('phase').textContent='ПЕСНЯ ЗАВЕРШЕНА';setStatus('Трек закончился.')});
+audio.addEventListener('pause',clearAnimation);
+renderList();if(tracks.length)choose(tracks[0]);else{setStatus('Нет треков. Добавь песни в tracks.js.');displayPlaceholder('Список песен пуст')}
+</script>
+</body>
+</html>

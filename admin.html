@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bachata Trainer v0.4 — квадраты</title>
+<style>
+:root{color-scheme:dark;--bg:#101218;--panel:#1a1e28;--muted:#9ba3b4;--line:#303747;--accent:#a78bfa;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#242039 0,#101218 48%);color:#f4f5f8;font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:900px;margin:0 auto;padding:28px 18px 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:clamp(25px,5vw,36px);margin:0}.sub{color:var(--muted);margin:5px 0 22px}
+.panel{background:rgba(26,30,40,.94);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+input,textarea,button{font:inherit}input[type=number],input[type=file],textarea{width:100%;background:#11151d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}
+input[type=file]{padding:9px}textarea{min-height:104px;font:13px/1.5 ui-monospace,monospace;resize:vertical}
+button{border:0;border-radius:12px;padding:12px 18px;cursor:pointer;font-weight:700;background:var(--accent);color:#171321}
+button.secondary{background:#303747;color:#fff}button:disabled{opacity:.4;cursor:not-allowed}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.trackname{color:var(--muted);font-size:14px;margin-top:8px;overflow-wrap:anywhere}
+.stage{text-align:center;padding:20px 10px 12px}
+.kicker{color:var(--muted);font-size:12px;letter-spacing:.13em;text-transform:uppercase}
+.count{font-size:clamp(100px,25vw,170px);font-weight:800;line-height:1.05;letter-spacing:-.07em;margin:2px 0;color:var(--green);font-variant-numeric:tabular-nums}
+.subcount{font-size:19px;color:#d9d5e8}.appendix{color:var(--amber)!important}
+.square-progress{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:560px;margin:18px auto 2px}
+.square-slot{border:1px solid var(--line);border-radius:10px;padding:10px 6px;background:#11151d;color:var(--muted);font-size:14px;font-weight:700}
+.square-slot.done{border-color:#37635a;color:#80c8af;background:#19372f}
+.square-slot.current{color:#15131e;background:var(--accent);border-color:var(--accent)}
+.square-slot.appendix-slot{opacity:.45}
+.square-slot.missing{opacity:.22;text-decoration:line-through}
+.square-label{font-size:12px;color:var(--muted);margin-top:2px}
+.beats{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;max-width:560px;margin:20px auto}
+.beat{border:1px solid var(--line);background:#11151d;border-radius:10px;padding:10px 0;color:#aeb5c3;font-weight:700}
+.beat.active{background:var(--green);color:#07130f;border-color:var(--green);transform:scale(1.06)}
+.beat.appendix-active{background:var(--amber);color:#211600;border-color:var(--amber)}
+.status{color:var(--muted);min-height:24px}.timeline{width:100%;accent-color:var(--accent);margin-top:10px}
+.small{font-size:13px;color:var(--muted)}.tag{display:inline-block;border:1px solid var(--line);padding:4px 9px;border-radius:999px;color:var(--muted);font-size:12px}
+details summary{cursor:pointer;font-weight:700} .note{background:#11151d;border-radius:10px;padding:12px;color:var(--muted);font-size:13px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:14px}.beats{gap:4px}.beat{padding:8px 0}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><div><h1>Bachata Trainer</h1><div class="sub">Версия 0.4 · разметка · короткие квадраты</div></div><span class="tag">Локально в браузере</span></div>
+
+  <section class="panel">
+    <div class="grid">
+      <div><label for="file">Выбери MP3 на компьютере</label><input id="file" type="file" accept="audio/*"></div>
+      <div><label for="bpm">BPM</label><input id="bpm" type="number" min="30" max="300" step="0.1" value="117"></div>
+      <div><label for="offset">Первый счёт (Offset), секунд</label><input id="offset" type="number" step="0.01" value="0.30"></div>
+      <div><label for="speed">Скорость воспроизведения</label><input id="speed" type="number" min="0.5" max="1.5" step="0.05" value="1"></div>
+    </div>
+    <div class="trackname" id="trackname">Файл не выбран. Выбери свою обрезанную песню.</div>
+    <div class="controls">
+      <button id="play" disabled>▶ Играть</button>
+      <button id="pause" class="secondary" disabled>Ⅱ Пауза</button>
+      <button id="restart" class="secondary" disabled>↺ С начала</button>
+    </div>
+    <audio id="audio" preload="metadata"></audio>
+    <input id="seek" class="timeline" type="range" min="0" max="100" value="0" disabled>
+    <div class="top small"><span id="current">00:00</span><span id="duration">00:00</span></div>
+  </section>
+
+  <section class="panel stage">
+    <div class="kicker" id="phase">ОЖИДАНИЕ МУЗЫКИ</div>
+    <div class="count" id="count">—</div>
+    <div class="subcount" id="bar">Выбери трек и нажми «Играть»</div>
+    <div class="square-progress" id="squareProgress" aria-label="Положение внутри квадрата">
+      <div class="square-slot">1-я восьмёрка</div><div class="square-slot">2-я восьмёрка</div><div class="square-slot">3-я восьмёрка</div><div class="square-slot">4-я восьмёрка</div>
+    </div>
+    <div class="square-label" id="squareLabel">Обычно квадрат = 4 восьмёрки; короткий может быть из 2</div>
+    <div class="beats" id="beats">
+      <div class="beat">1</div><div class="beat">2</div><div class="beat">3</div><div class="beat">4</div>
+      <div class="beat">5</div><div class="beat">6</div><div class="beat">7</div><div class="beat">8</div>
+    </div>
+    <div class="status" id="status">Счёт синхронизируется по BPM и Offset.</div>
+  </section>
+
+  <section class="panel">
+    <details>
+      <summary>Музыкальная структура (необязательно для первого теста)</summary>
+      <p class="small">Каждый сегмент normal — отдельная музыкальная фраза. 32 доли = полный квадрат (4 восьмёрки), 16 долей = короткий квадрат (2 восьмёрки), после которого следующий normal начинает НОВЫЙ квадрат. Appendix — дополнительные доли между квадратами. Если поле пустое, счёт обычный: по 4 восьмёрки в квадрат.</p>
+      <label for="segments">Сегменты JSON</label>
+      <textarea id="segments" placeholder='[{"type":"normal","beats":32},{"type":"normal","beats":16},{"type":"normal","beats":32}]'></textarea>
+      <div class="controls"><button id="apply" class="secondary">Применить структуру</button><span class="small" id="structureStatus">Сейчас: обычный счёт 1–8 без разметки аппендиксов.</span></div>
+    </details>
+  </section>
+  <div class="note">Важно: это первый прототип режима обучения. Он показывает счёт по заданным BPM и Offset, но пока не распознаёт музыку и не определяет аппендиксы автоматически. Сначала проверь на одном треке, совпадает ли цифра «1» с твоим музыкальным счётом.</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const audio = $('audio');
+let objectUrl = null, segments = [], totalSegmentBeats = 0, raf = null, lastBeat = -1;
+
+function fmt(sec){
+  if(!Number.isFinite(sec)) return '00:00';
+  sec=Math.max(0,Math.floor(sec));
+  return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+}
+function bpm(){return Math.max(1, Number($('bpm').value)||117)}
+function offset(){return Number($('offset').value)||0}
+function renderIdle(message){
+  $('phase').textContent='ОЖИДАНИЕ МУЗЫКИ'; $('count').textContent='—';
+  $('count').className='count'; $('bar').textContent=message||'Выбери трек и нажми «Играть»';
+  [...$('beats').children].forEach((el,i)=>{el.className='beat';el.textContent=i+1});
+  [...$('squareProgress').children].forEach(el=>el.className='square-slot');
+}
+function getPosition(t){
+  const beatDuration=60/bpm();
+  const elapsed=t-offset();
+  if(elapsed<0) return {before:true};
+  const beatIndex=Math.floor(elapsed/beatDuration+1e-7);
+  let remaining=beatIndex;
+  let nextSquare=1;
+
+  // Each normal segment starts a new square. A 16-beat segment is a 2-eight square.
+  for(let i=0;i<segments.length;i++){
+    const seg=segments[i];
+    if(remaining<seg.beats){
+      if(seg.type==='appendix'){
+        return {beatIndex, count:remaining%4+1, appendix:true, segmentIndex:i};
+      }
+      return squarePosition(beatIndex, remaining, nextSquare, seg.beats);
+    }
+    remaining-=seg.beats;
+    if(seg.type==='normal')nextSquare+=Math.ceil(seg.beats/32);
+  }
+  // Beyond the last marked segment, continue with ordinary full squares.
+  return squarePosition(beatIndex, remaining, nextSquare, Infinity);
+}
+function squarePosition(beatIndex, beatInSegment, firstSquare, segmentLength){
+  const localSquare=Math.floor(beatInSegment/32);
+  const squareLength=Math.min(32, segmentLength-localSquare*32);
+  return {
+    beatIndex, appendix:false,
+    count:beatInSegment%8+1,
+    square:firstSquare+localSquare,
+    eighthInSquare:Math.floor((beatInSegment%32)/8)+1,
+    eighthCount:Number.isFinite(squareLength)?Math.ceil(squareLength/8):4
+  };
+}
+function update(){
+  if(!audio.src) return;
+  const t=audio.currentTime;
+  $('current').textContent=fmt(t);
+  if(audio.duration) $('seek').value=(t/audio.duration)*100;
+  const p=getPosition(t);
+  if(p.before){renderIdle('Первый счёт начнётся через '+Math.max(0,offset()-t).toFixed(2)+' сек.');}
+  else {
+    $('phase').textContent=p.appendix?'АППЕНДИКС':'ОСНОВНОЙ СЧЁТ';
+    $('count').textContent=p.count;
+    $('count').className='count'+(p.appendix?' appendix':'');
+    $('bar').textContent=p.appendix?'Дополнительные счёты 1–4':'Квадрат № '+p.square+' · восьмёрка '+p.eighthInSquare+' из '+p.eighthCount+(p.eighthCount<4?' · короткий квадрат':'');
+    [...$('squareProgress').children].forEach((el,i)=>{
+      el.className='square-slot'+(p.appendix?' appendix-slot':i+1>p.eighthCount?' missing':i+1<p.eighthInSquare?' done':i+1===p.eighthInSquare?' current':'');
+    });
+    [...$('beats').children].forEach((el,i)=>{
+      el.className='beat'+(!p.appendix&&i===p.count-1?' active':'');
+      el.textContent=i+1;
+    });
+    if(p.appendix){
+      [...$('beats').children].forEach((el,i)=>{el.className='beat'+(i===p.count-1?' appendix-active':'')});
+    }
+    if(p.beatIndex!==lastBeat){lastBeat=p.beatIndex}
+  }
+  if(!audio.paused) raf=requestAnimationFrame(update);
+}
+$('file').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f)return;
+  if(objectUrl) URL.revokeObjectURL(objectUrl);
+  objectUrl=URL.createObjectURL(f); audio.src=objectUrl;
+  $('trackname').textContent=f.name;
+  $('play').disabled=$('pause').disabled=$('restart').disabled=$('seek').disabled=false;
+  renderIdle('Готов к воспроизведению.');
+});
+audio.addEventListener('loadedmetadata',()=>{
+  $('duration').textContent=fmt(audio.duration); $('seek').max=100;
+});
+$('play').addEventListener('click',async()=>{
+  if(!audio.src)return;
+  audio.playbackRate=Math.max(.5,Math.min(1.5,Number($('speed').value)||1));
+  try{await audio.play();cancelAnimationFrame(raf);update();}catch(e){$('status').textContent='Не удалось запустить аудио: '+e.message;}
+});
+$('pause').addEventListener('click',()=>{audio.pause();cancelAnimationFrame(raf);update();});
+$('restart').addEventListener('click',()=>{audio.currentTime=0;lastBeat=-1; if(!audio.paused)update();else renderIdle('Начало трека. Нажми «Играть».');});
+$('seek').addEventListener('input',e=>{if(audio.duration)audio.currentTime=(Number(e.target.value)/100)*audio.duration; if(audio.paused)update();});
+$('speed').addEventListener('change',()=>{audio.playbackRate=Math.max(.5,Math.min(1.5,Number($('speed').value)||1));});
+$('bpm').addEventListener('change',()=>{lastBeat=-1;if(audio.paused)update();});
+$('offset').addEventListener('change',()=>{lastBeat=-1;if(audio.paused)update();});
+audio.addEventListener('pause',()=>cancelAnimationFrame(raf));
+audio.addEventListener('ended',()=>{cancelAnimationFrame(raf);$('phase').textContent='ТРЕК ЗАВЕРШЁН';$('status').textContent='Прослушивание завершено.';});
+$('apply').addEventListener('click',()=>{
+  const raw=$('segments').value.trim();
+  if(!raw){segments=[];$('structureStatus').textContent='Обычный счёт 1–8 без разметки аппендиксов.';if(audio.paused)update();return;}
+  try{
+    const parsed=JSON.parse(raw);
+    if(!Array.isArray(parsed)||!parsed.length)throw new Error('Ожидается непустой массив.');
+    parsed.forEach((s,i)=>{
+      if(!['normal','appendix'].includes(s.type))throw new Error('Сегмент '+(i+1)+': type должен быть normal или appendix.');
+      if(!Number.isInteger(s.beats)||s.beats<1)throw new Error('Сегмент '+(i+1)+': beats должен быть целым числом больше нуля.');
+    });
+    segments=parsed;totalSegmentBeats=segments.reduce((sum,s)=>sum+s.beats,0);
+    $('structureStatus').textContent='Применено сегментов: '+segments.length+'. Всего размечено долей: '+totalSegmentBeats+'.';
+    if(audio.paused)update();
+  }catch(err){$('structureStatus').textContent='Ошибка JSON: '+err.message+' (проверь запятые перед ] и }).';}
+});
+renderIdle();
+</script>
+</body>
+</html>

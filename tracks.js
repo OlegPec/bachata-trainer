@@ -74,7 +74,160 @@ window.BACHATA_TRACKS = [
 		  beats: 4
 		}
 	]
-  }
+  },
+  {
+	  "id": "track-102611605",
+	  "title": "Jean & Alex — Te Pido Que Vuelvas",
+	  "file": "Jean & Alex — Te Pido Que Vuelvas.mp3",
+	  "bpm": 116,
+	  "offset": 0.51,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "appendix",
+		  "beats": 4
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		}
+	  ],
+	  "accents": [
+		{
+		  "startBeat": 64,
+		  "beats": 4
+		}
+	  ]
+	},
+	{
+	  "id": "track-3112859044",
+	  "title": "Marc Anthony — Punta Cana",
+	  "file": "Marc Anthony — Punta Cana.mp3",
+	  "bpm": 108,
+	  "offset": 1.2,
+	  "ready": false,
+	  "segments": [],
+	  "accents": []
+	},
+	{
+	  "id": "track-611212198",
+	  "title": "Jiory, Frank Santos, DJ Husky — Cintura",
+	  "file": "Jiory, Frank Santos, DJ Husky — Cintura.mp3",
+	  "bpm": 120,
+	  "offset": 0,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "appendix",
+		  "beats": 2
+		}
+	  ],
+	  "accents": []
+	},
+	{
+	  "id": "track-2680409649",
+	  "title": "Grupo Extra — Traicionera",
+	  "file": "Grupo Extra — Traicionera.mp3",
+	  "bpm": 115,
+	  "offset": 0,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "appendix",
+		  "beats": 4
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		}
+	  ],
+	  "accents": []
+	},
+	{
+	  "id": "track-1319791719",
+	  "title": "Chris Paradise — Yo Vs El",
+	  "file": "Chris Paradise — Yo Vs El.mp3",
+	  "bpm": 106,
+	  "offset": 0,
+	  "ready": false,
+	  "segments": [],
+	  "accents": []
+	},
+	{
+	  "id": "track-1082943917",
+	  "title": "Daniel Santacruz — Este Amor",
+	  "file": "Daniel Santacruz — Este Amor.mp3",
+	  "bpm": 120,
+	  "offset": 0.38,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "appendix",
+		  "beats": 3
+		}
+	  ],
+	  "accents": [
+		{
+		  "startBeat": 95,
+		  "beats": 4
+		}
+	  ]
+	},
+	{
+	  "id": "track-4288096538",
+	  "title": "Jiory, Chris Paradise — Peligrosa",
+	  "file": "Jiory, Chris Paradise — Peligrosa.mp3",
+	  "bpm": 121,
+	  "offset": 0.3,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "normal",
+		  "beats": 16
+		}
+	  ],
+	  "accents": []
+	}
+
+
+
+
 
   // Добавляй следующие треки через запятую:
   // ,{

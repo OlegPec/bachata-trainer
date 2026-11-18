@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bachata Trainer — Экзамен</title>
+<style>
+:root{color-scheme:dark;--bg:#0e1018;--panel:#1a1e2b;--edge:#34394d;--muted:#a4adc3;--violet:#ac91ff;--mint:#49dcad;--amber:#f2b65e;--red:#ff858e}
+*{box-sizing:border-box}html,body{min-height:100%}
+body{margin:0;background:radial-gradient(ellipse at 45% -20%,#34284d,#0e1018 58%);color:#f7f6fb;font:16px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 60px}a{color:#dfcfff;text-decoration:none}a:hover{text-decoration:underline}
+.top{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:24px}.nav{display:flex;gap:13px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:14px}
+h1{font-size:clamp(25px,4vw,36px);margin:0;letter-spacing:-.035em}.subtitle{color:var(--muted);font-size:14px;margin-top:4px}
+h2{font-size:clamp(21px,3vw,27px);line-height:1.2;margin:0 0 15px}.card{border:1px solid var(--edge);background:rgba(26,30,43,.96);border-radius:20px;padding:clamp(17px,3vw,28px);margin:14px 0}
+button{background:var(--violet);color:#1b1325;font:inherit;font-weight:750;border:0;border-radius:13px;padding:13px 20px;cursor:pointer}button:hover{filter:brightness(1.08)}button:disabled{opacity:.4;cursor:not-allowed;filter:none}.secondary{background:#343a4c;color:#f6f5fa}.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.hidden{display:none!important}
+.muted{color:var(--muted)}.mini{font-size:13px}.lead{font-size:17px;color:#e5e3ee}.tag{border-radius:100px;border:1px solid #574a80;background:#272139;padding:5px 11px;color:#decfff;font-weight:700;font-size:12px}
+.features,.metricgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}.feature,.metric{background:#121622;border:1px solid #303647;border-radius:13px;padding:17px}.feature b,.metric strong{display:block;font-size:23px}.feature span,.metric small{color:var(--muted);font-size:12px}
+.option{display:flex;align-items:center;gap:10px;color:#e4e5f0;cursor:pointer}.option input{accent-color:var(--violet);width:19px;height:19px}.notice{color:#d8c3ec;background:#272036;border-radius:11px;padding:12px 15px;font-size:13px;margin-top:16px}
+.progress-dots{display:flex;align-items:center;gap:9px;margin:5px 0 24px}.step{height:8px;flex:1;border-radius:20px;background:#313748}.step.current{background:var(--violet)}.step.complete{background:var(--mint)}
+.songtitle{font-size:clamp(21px,3vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.2;margin:10px 0}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:750;color:var(--muted)}
+.targets{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px}.target{min-width:44px;padding:8px 11px;border-radius:10px;border:1px solid #9b83dc;background:#352b51;color:#efe5ff;font-size:23px;font-weight:800;text-align:center;transition:background .12s}
+.target.hit{background:#174337;border-color:#49dcad;color:#78f2c8}.target.failed{background:#51272f;border-color:var(--red);color:#ffb1b7}.target.next{box-shadow:0 0 0 2px #a894fa inset}
+.prep{text-align:center;padding:14px 0}.prep .targets{margin:24px 0 12px}.hint{font-size:14px;color:var(--muted)}.error{color:#ffafaf;min-height:24px;font-size:14px}
+.game{text-align:center;padding-top:8px}.tap{display:block;width:min(260px,65vw);aspect-ratio:1;border-radius:50%;border:9px solid #3b315b;margin:17px auto 16px;background:radial-gradient(circle at 42% 32%,#d2bfff,#9876e4 68%,#674db2);box-shadow:0 0 0 10px #201b33,0 14px 50px rgba(107,73,183,.25);font-size:clamp(23px,5vw,34px);font-weight:850;color:#1b1325;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.tap:active,.tap.pressed{transform:scale(.96)}.game-status{min-height:55px;border-radius:12px;background:#151b29;border:1px solid #30394c;padding:12px 14px;margin:10px auto;max-width:690px;font-size:15px}
+.game-status.success,.game-status.completed{color:#9af5d1;border-color:#3d9474}.game-status.error{color:#ffadb5;border-color:#aa555e}.game-stats{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;color:var(--muted);font-size:13px}
+.game-stats strong{color:#fff}.progress{height:11px;overflow:hidden;background:#121724;border-radius:25px;border:1px solid var(--edge);margin-top:23px}.progressFill{height:100%;background:linear-gradient(90deg,#8265e6,#cab0ff);width:0;transition:width .06s linear}
+.game-time{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-top:8px;font-variant-numeric:tabular-nums}.score{font-size:clamp(52px,12vw,88px);font-weight:850;letter-spacing:-.08em;line-height:1.06;color:var(--mint)}.score .outof{font-size:22px;letter-spacing:0;color:var(--muted)}
+.result-row{display:flex;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap}.result-text{color:var(--muted);margin-top:7px}
+.history{display:grid;gap:10px;margin-top:15px}.history-item{display:flex;justify-content:space-between;align-items:center;gap:15px;background:#111623;border:1px solid #33394a;border-radius:11px;padding:13px}.history-item span{font-weight:700}.history-item small{font-size:12px;color:var(--muted);display:block}.history-item strong{font-size:22px;white-space:nowrap}
+.fineprint{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.65}.share-url{width:100%;border:1px solid #393b55;border-radius:12px;background:#0d111b;color:#dcd2fc;padding:13px;margin-top:14px;font-size:12px}
+@media(max-width:650px){.features,.metricgrid{grid-template-columns:repeat(2,1fr);gap:8px}.feature,.metric{padding:12px}.btnrow button{flex:1 1 100%}.game .tap{width:min(240px,68vw)}.history-item strong{font-size:17px}.target{font-size:20px}}
+</style></head><body>
+<main>
+  <header class="top"><div><h1>🎵 Bachata Trainer</h1><div class="subtitle">Экзамен · серии · очки · ссылка на результат</div></div>
+    <div class="nav"><span class="tag">Экзамен v0.8</span><a href="index.html">Обучение</a><a href="admin.html">⚙ Разметка</a></div></header>
+  <section class="card" id="home">
+    <div class="eyebrow">Экзамен на слух</div><h2 style="margin-top:10px">Три случайные песни. Новые задания после каждой успешной серии.</h2>
+    <p class="lead">Нажимай <b>пробел</b> или кнопку точно на заданных долях. Задание можно начать в <b>любой восьмёрке</b> — не обязательно в ближайшей. Каждый пропущенный шанс уменьшает будущий бонус за скорость, но не засчитывается как ошибка сам по себе.</p>
+    <div class="features"><div class="feature"><b>3 трека</b><span>Случайно, без повторов</span></div><div class="feature"><b>До 90 секунд</b><span>На песню</span></div><div class="feature"><b>1000 очков</b><span>Максимум за песню</span></div></div>
+    <label class="option"><input type="checkbox" id="readyOnly"> Только песни с <code>ready: true</code></label>
+    <p class="muted mini" id="available"></p><p class="muted mini" id="bestScore"></p>
+    <div class="notice">Текущий музыкальный счёт скрыт, но каждое твоё нажатие сразу проверяется. Если прервёшь начатую серию, прогресс серии сбросится; само ожидание без нажатий не штрафуется. Во время аппендикса серии не начинаются.</div>
+    <div class="btnrow"><button id="startExam">Начать экзамен</button></div>
+  </section>
+  <section class="card hidden" id="preparation">
+    <div class="progress-dots" id="prepDots"></div><div class="prep"><div class="eyebrow" id="prepStage"></div><h2 class="songtitle" id="prepSong"></h2>
+      <p class="hint">Первый набор:</p><div class="targets" id="prepTargets"></div>
+      <p class="muted" id="prepDescription"></p><p class="error" id="prepError"></p>
+      <div class="btnrow" style="justify-content:center"><button id="playTrack" disabled>Загрузка аудио…</button><button id="replaceTrack" class="secondary hidden">Другая песня</button><button id="stopBefore" class="secondary">В начало</button></div>
+    </div>
+  </section>
+  <section class="card hidden" id="playing">
+    <div class="progress-dots" id="playDots"></div>
+    <div class="game"><div class="eyebrow" id="nowStage"></div><h2 class="songtitle" id="nowSong"></h2>
+      <p class="hint">Задание (подсвечены уже засчитанные счёты):</p><div class="targets" id="nowTargets"></div>
+      <div class="game-stats"><span>Серий пройдено: <strong id="nowCompleted">0</strong></span><span>Очки: <strong id="nowScore">0</strong></span><span>Восьмёрок ожидания: <strong id="nowWaited">0</strong></span></div>
+      <button class="tap" id="tap" aria-label="Нажать на музыкальный счёт">НАЖМИ<br><span style="font-size:.55em;font-weight:650">или пробел</span></button>
+      <div id="gameStatus" class="game-status" role="status" aria-live="polite">Слушай музыку и начинай с первого числа набора.</div>
+      <p class="muted mini">Ошибся в серии — начни её заново. Не успел — дождись удобной восьмёрки.</p>
+      <div class="progress"><div class="progressFill" id="progressFill"></div></div>
+      <div class="game-time"><span id="timeNow">00:00</span><span id="timeTotal">01:30</span></div>
+      <div class="btnrow" style="justify-content:center"><button id="abortExam" class="secondary">Прервать экзамен</button></div>
+    </div>
+  </section>
+  <section class="card hidden" id="songResult">
+    <div class="progress-dots" id="resultDots"></div><div class="eyebrow" id="resultStage"></div><h2 class="songtitle" id="resultSong"></h2>
+    <div class="result-row"><div><div class="score" id="resultScore"></div><div class="result-text" id="resultVerdict"></div></div>
+      <div><div class="eyebrow">Пройдено серий</div><div style="font-size:25px;font-weight:800" id="resultSets"></div><div class="muted mini" id="resultPattern"></div></div></div>
+    <div class="metricgrid"><div class="metric"><strong id="perfect">0</strong><small>Точно (≤90 мс)</small></div><div class="metric"><strong id="good">0</strong><small>Хорошо (≤165 мс)</small></div><div class="metric"><strong id="near">0</strong><small>Близко (≤220 мс*)</small></div><div class="metric"><strong id="failed">0</strong><small>Сброшенных серий</small></div><div class="metric"><strong id="extra">0</strong><small>Неверных нажатий</small></div><div class="metric"><strong id="speedBonus">0</strong><small>Бонус за скорость</small></div></div>
+    <p class="muted" id="resultExtra"></p><p class="muted mini" id="resultTiming"></p>
+    <div class="btnrow"><button id="nextTrack">Следующая песня</button></div>
+    <p class="fineprint">За полностью пройденную серию — до 100 за точность и до 25 за скорость (−5 за каждую пропущенную восьмёрку, максимум до нуля). Неверный клик −10; отсутствие нажатий не штрафуется. Максимум за песню 1000. *Допуск автоматически немного сужается при высоком BPM.</p>
+  </section>
+  <section class="card hidden" id="finalResult">
+    <div class="eyebrow">Экзамен завершён</div><h2 style="margin-top:10px">Твой итог</h2>
+    <div class="score" id="totalScore"></div><div class="result-text" id="finalRating"></div>
+    <h2 style="margin-top:28px">По песням</h2><div class="history" id="history"></div><p class="muted mini" id="recordText"></p>
+    <div class="notice"><b>Поделиться результатом</b><p style="margin:6px 0 0">JSON сохраняется прямо в ссылке. Она откроется на другом устройстве без сервера. Это не подтверждённая запись: ссылку можно изменить.</p>
+      <input id="shareUrl" class="share-url" readonly aria-label="Ссылка с результатом"><div class="btnrow"><button id="shareCopy">Скопировать ссылку</button><a id="shareOpen" href="result.html" target="_blank" rel="noopener" style="align-self:center">Открыть страницу результата</a></div><p id="copyStatus" class="muted mini"></p></div>
+    <div class="btnrow"><button id="newExam" class="secondary">Новый экзамен</button><a href="index.html" style="align-self:center;margin:0 8px">Режим обучения</a></div>
+  </section>
+</main>
+<audio id="audio" preload="metadata"></audio>
+<script src="tracks.js"></script><script src="exam-engine.js"></script><script src="result-codec.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const audio=$('audio'),E=window.BachataExamEngine,C=window.BachataResultCodec;
+const allTracks=(Array.isArray(window.BACHATA_TRACKS)?window.BACHATA_TRACKS:[]).filter(t=>t&&t.id&&t.title&&t.file&&Number(t.bpm)>0&&Number.isFinite(Number(t.offset)));
+let eligible=[],playlist=[],results=[],index=0,session=null;
+let state='home',cap=90,raf=null,tapAnimationTimeout=null,lastFeedback=null;
+const sections=['home','preparation','playing','songResult','finalResult'];
+function show(name){sections.forEach(id=>$(id).classList.toggle('hidden',id!==name));}
+function fmt(s){s=Math.floor(Math.max(0,s||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function candidates(){return allTracks.filter(t=>!$('readyOnly').checked||t.ready===true);}
+function updateHome(){const cs=candidates();$('available').textContent='Доступно: '+cs.length+' из '+allTracks.length+' песен.'+(cs.length>0&&cs.length<3?' Для теста будет '+cs.length+' песен.':'');
+ $('startExam').disabled=!cs.length;$('startExam').textContent=cs.length>=3?'Начать экзамен (3 песни)':'Пробный экзамен ('+cs.length+' песен)';
+ let best=null;try{best=Number(localStorage.getItem('bachata.exam.v08.best'));}catch(_){}
+ $('bestScore').textContent=Number.isFinite(best)&&best>0?'Личный рекорд: '+best+' / 3000':'Рекорд появится после экзамена на 3 песнях.';
+}
+function dots(id,current,total){const container=$(id);container.replaceChildren();for(let i=0;i<total;i++){const d=document.createElement('div');d.className='step'+(i<current?' complete':i===current?' current':'');container.append(d);}}
+function targets(id,counts,hits=[],failedCount=null){const el=$(id);el.replaceChildren();for(const n of counts){const span=document.createElement('span');span.className='target'+(hits.includes(n)?' hit':'')+(failedCount===n?' failed':'');span.textContent=n;el.append(span);}}
+function stop(){audio.pause();if(raf!==null){cancelAnimationFrame(raf);raf=null;}audio.removeAttribute('src');audio.load();session=null;lastFeedback=null;}
+function home(){stop();state='home';show('home');updateHome();}
+function question(){return playlist[index];}
+function startExam(){eligible=candidates();if(!eligible.length)return;playlist=E.makePlaylist(eligible,Math.min(3,eligible.length));results=[];index=0;loadQuestion();}
+function loadQuestion(){stop();state='loading';show('preparation');const {track,pattern}=question();dots('prepDots',index,playlist.length);$('prepStage').textContent='Песня '+(index+1)+' из '+playlist.length;
+ $('prepSong').textContent=track.title;targets('prepTargets',pattern.counts);$('prepDescription').textContent='Сейчас загружается MP3…';$('prepError').textContent='';$('replaceTrack').classList.add('hidden');
+ $('playTrack').disabled=true;$('playTrack').textContent='Загрузка…';audio.src='./audio/'+encodeURIComponent(track.file);audio.playbackRate=1;audio.load();}
+function replaceTrack(){const used=new Set(playlist.map(p=>p.track.id)),alt=E.shuffle(eligible.filter(t=>!used.has(t.id)));
+ if(!alt.length){$('prepError').textContent='Других песен нет. Проверь папку audio/';return;}
+ playlist[index]={track:alt[0],pattern:question().pattern};loadQuestion();}
+function onReady(){if(state!=='loading')return;if(!Number.isFinite(audio.duration)||audio.duration<=0){loadFailed('Не удалось прочесть длину MP3.');return;}
+ cap=Math.min(90,audio.duration);if(!E.buildEighths(question().track,cap).length){loadFailed('В файле нет полной восьмёрки для экзамена. Проверь BPM и Offset.');return;}
+ state='ready';$('playTrack').disabled=false;$('playTrack').textContent='▶ Начать песню';$('prepDescription').textContent='Продолжительность: '+fmt(cap)+'. Начинать набор можно в любой восьмёрке.';}
+function loadFailed(msg){if(state==='home'||state==='playing'||state==='songResult'||state==='finalResult')return;state='error';$('playTrack').disabled=true;$('playTrack').textContent='Ошибка загрузки';$('prepError').textContent=msg;
+ $('replaceTrack').classList.remove('hidden');$('replaceTrack').disabled=eligible.length<=playlist.length;}
+async function play(){if(state!=='ready')return;
+ try{audio.currentTime=0;audio.playbackRate=1;await audio.play();}catch(e){loadFailed('Не удалось запустить музыку: '+e.message);return;}
+ session=new E.SequenceSession(question().track,cap,question().pattern);state='playing';show('playing');dots('playDots',index,playlist.length);
+ $('nowStage').textContent='Песня '+(index+1)+' из '+playlist.length;$('nowSong').textContent=question().track.title;$('timeTotal').textContent=fmt(cap);lastFeedback=null;renderLive();animate();}
+function renderLive(){if(state!=='playing'||!session)return;targets('nowTargets',session.pattern.counts,session.completedCounts,session.failedCount);
+ $('nowCompleted').textContent=session.completedSets;$('nowScore').textContent=Math.min(1000,session.points);$('nowWaited').textContent=session.waitingBars(audio.currentTime);
+ const feedback=session.feedback;if(feedback!==lastFeedback){$('gameStatus').textContent=feedback.text;$('gameStatus').className='game-status '+feedback.kind;lastFeedback=feedback;}
+}
+function animate(){if(state!=='playing')return;const t=audio.currentTime;session.tick(t);renderLive();$('timeNow').textContent=fmt(t);$('progressFill').style.width=(100*Math.min(cap,t)/cap).toFixed(2)+'%';
+ if(t>=cap-0.015||audio.ended){finishSong();return;}raf=requestAnimationFrame(animate);}
+function tap(){if(state!=='playing'||audio.paused||audio.ended||audio.currentTime>=cap||!session)return;session.tap(audio.currentTime);renderLive();
+ const button=$('tap');button.classList.add('pressed');clearTimeout(tapAnimationTimeout);tapAnimationTimeout=setTimeout(()=>button.classList.remove('pressed'),110);}
+function finishSong(){if(state!=='playing')return;state='songResult';audio.pause();if(raf!==null){cancelAnimationFrame(raf);raf=null;}
+ const report=session.finish();results.push({track:question().track,pattern:question().pattern,report});dots('resultDots',index,playlist.length);
+ $('resultStage').textContent='Песня '+(index+1)+' из '+playlist.length;$('resultSong').textContent=question().track.title;
+ $('resultScore').innerHTML=report.score+'<span class="outof"> / 1000</span>';
+ $('resultVerdict').textContent=report.score>=850?'Отлично!':report.score>=650?'Хорошо!':report.score>=350?'С каждым заходом лучше!':'Попробуй ещё раз, не торопясь.';
+ $('resultSets').textContent=report.completedSets;$('resultPattern').textContent='Смен заданий: '+Math.max(0,report.patternHistory.length-1);
+ for(const id of ['perfect','good','near'])$(id).textContent=report[id];$('failed').textContent=report.failedSets;$('extra').textContent=report.extra;$('speedBonus').textContent='+'+report.bonus;
+ $('resultExtra').textContent='Начато серий: '+report.attempts+'. Прервано: '+report.failedSets+'. Неверных нажатий: '+report.extra+' (−'+report.penalty+' очков).';
+ $('resultTiming').textContent=report.meanAbsMs==null?'Точных нажатий пока нет.':'Средняя ошибка: '+Math.round(report.meanAbsMs)+' мс; отклонение в среднем '+Math.abs(Math.round(report.meanSignedMs))+' мс '+(report.meanSignedMs<0?'раньше.':'позже.');
+ $('nextTrack').textContent=index+1===playlist.length?'Общий результат':'Следующая песня';show('songResult');}
+function next(){if(state!=='songResult')return;if(index+1<playlist.length){index++;loadQuestion();}else finishExam();}
+function finishExam(){state='finalResult';show('finalResult');const total=results.reduce((n,r)=>n+r.report.score,0),max=results.length*1000;
+ $('totalScore').innerHTML=total+'<span class="outof"> / '+max+'</span>';$('finalRating').textContent=total/max>=.8?'Очень хороший экзамен!':total/max>=.5?'Хороший прогресс!':'Повтори задания и попробуй улучшить рекорд.';
+ $('history').replaceChildren();for(const r of results){const row=document.createElement('div');row.className='history-item';const left=document.createElement('div'),name=document.createElement('span'),detail=document.createElement('small');
+ name.textContent=r.track.title;detail.textContent='Успешных серий: '+r.report.completedSets+' · ошибок: '+r.report.failedSets;left.append(name,detail);const score=document.createElement('strong');score.textContent=r.report.score+' / 1000';row.append(left,score);$('history').append(row);}
+ if(results.length===3){try{const old=Number(localStorage.getItem('bachata.exam.v08.best')||0);if(total>old){localStorage.setItem('bachata.exam.v08.best',String(total));$('recordText').textContent='🏆 Новый личный рекорд: '+total+'!';}else $('recordText').textContent='Личный рекорд: '+old+' / 3000';}catch(_){$('recordText').textContent='Не получилось записать рекорд в браузер.';}}
+ else $('recordText').textContent='Пробный экзамен. Рекорд сохраняется за 3 песни.';
+ try{const payload={v:1,date:new Date().toISOString(),total,maximum:max,tracks:results.map(r=>({title:r.track.title,score:r.report.score,completed:r.report.completedSets,failed:r.report.failedSets,extra:r.report.extra,accuracyMs:r.report.meanAbsMs==null?null:Math.round(r.report.meanAbsMs),patterns:r.report.patternHistory}))};
+ const url=C.getLink(payload,location.href);$('shareUrl').value=url;$('shareOpen').href=url;$('shareCopy').disabled=false;$('copyStatus').textContent='';}
+ catch(e){$('copyStatus').textContent='Не удалось создать ссылку: '+e.message;$('shareCopy').disabled=true;}
+}
+async function copyShare(){const url=$('shareUrl').value;if(!url)return;
+ try{if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Буфер обмена недоступен');await navigator.clipboard.writeText(url);$('copyStatus').textContent='Ссылка скопирована!';}
+ catch(_){$('shareUrl').focus();$('shareUrl').select();$('copyStatus').textContent='Скопируй выделенную ссылку через Ctrl+C.';}}
+$('readyOnly').addEventListener('change',updateHome);$('startExam').addEventListener('click',startExam);$('playTrack').addEventListener('click',play);$('replaceTrack').addEventListener('click',replaceTrack);
+$('stopBefore').addEventListener('click',home);$('nextTrack').addEventListener('click',next);$('newExam').addEventListener('click',home);$('shareCopy').addEventListener('click',copyShare);
+$('tap').addEventListener('pointerdown',e=>{if(e.button===0||e.pointerType==='touch')tap();});
+$('abortExam').addEventListener('click',()=>{if(confirm('Прервать экзамен и потерять текущий результат?'))home();});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&state==='playing'){e.preventDefault();if(!e.repeat)tap();}});
+audio.addEventListener('loadedmetadata',onReady);audio.addEventListener('error',()=>{if(state==='loading'||state==='ready')loadFailed('MP3 не найден: audio/'+question().track.file);});
+audio.addEventListener('ended',finishSong);audio.addEventListener('timeupdate',()=>{if(state==='playing'&&audio.currentTime>=cap-0.015)finishSong();});
+updateHome();show('home');
+</script></body></html>

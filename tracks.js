@@ -223,7 +223,142 @@ window.BACHATA_TRACKS = [
 		}
 	  ],
 	  "accents": []
+	},
+	{
+	  "id": "track-3449131767",
+	  "title": "dj tronky, jensen, Mayinbito — Secreto De Locos",
+	  "file": "dj tronky, jensen, Mayinbito — Secreto De Locos.mp3",
+	  "bpm": 108,
+	  "offset": 1.1,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		}
+	  ],
+	  "accents": []
+	},
+	{
+	  "id": "track-2736653126",
+	  "title": "Roman, DJ Tony Pecino — La Reina",
+	  "file": "Roman, DJ Tony Pecino — La Reina.mp3",
+	  "bpm": 105,
+	  "offset": 0.32,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "appendix",
+		  "beats": 4
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		},
+		{
+		  "type": "normal",
+		  "beats": 16
+		},
+		{
+		  "type": "normal",
+		  "beats": 32
+		}
+	  ],
+	  "accents": []
+	},
+	{
+	  "id": "track-4092651917",
+	  "title": "Mickey Then — Asesina Matame",
+	  "file": "Mickey Then — Asesina Matame.mp3",
+	  "bpm": 113,
+	  "offset": 0.46,
+	  "ready": false,
+	  "segments": [
+		{
+		  "type": "normal",
+		  "beats": 16
+		}
+	  ],
+	  "accents": [
+		{
+		  "startBeat": 140,
+		  "beats": 4
+		}
+	  ]
+	},
+	{
+	  "id": "track-976129157",
+	  "title": "Melvin War, Vladi — 11pm",
+	  "file": "Melvin War, Vladi — 11pm.mp3",
+	  "bpm": 104,
+	  "offset": 0,
+	  "ready": false,
+	  "segments": [],
+	  "accents": []
 	}
+
+
+
 
 
 

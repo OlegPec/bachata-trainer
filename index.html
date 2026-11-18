@@ -31,8 +31,8 @@ button{cursor:pointer;border:0;border-radius:11px;padding:11px 17px;background:v
 <body>
 <main>
   <header class="header">
-    <div><h1>🎵 Bachata Trainer</h1><div class="sub">Режим обучения</div></div>
-    <div class="header-right"><span class="pill">Обучение</span></div>
+    <div><h1>🎵 Bachata Trainer</h1><div class="sub">Режим обучения · треки уже настроены</div></div>
+    <div class="header-right"><span class="pill">Обучение</span><a href="exam.html">🏆 Экзамен</a></div>
   </header>
   <div class="layout">
     <aside class="panel">
@@ -78,7 +78,8 @@ button{cursor:pointer;border:0;border-radius:11px;padding:11px 17px;background:v
         <div class="accent-info" id="accentInfo"></div>
         <div class="hint">Полный квадрат = 4 восьмёрки; короткий может содержать 2. Аппендиксы — жёлтым, акценты 5–8 — фиолетовым.</div>
       </section>
-	</div>
+      <div class="help">Настройки берутся из <code>tracks.js</code>. Здесь их нельзя случайно изменить. Длина трека и наличие MP3 зависят от файлов в папке <code>audio</code>.</div>
+    </div>
   </div>
 </main>
 <audio id="audio" preload="metadata"></audio>
